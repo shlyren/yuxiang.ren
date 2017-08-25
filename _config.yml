@@ -97,6 +97,11 @@ sitemap:
 baidusitemap:
   path: baidusitemap.xml
 
+browsersync:
+  logLevel: "warn"
+  ghostMode:
+    scroll: true
+
 deploy:
   type: git
   repo: 
