@@ -97,13 +97,13 @@ sitemap:
 baidusitemap:
   path: baidusitemap.xml
 
-# deploy:
-#   type: git
-#   repo: 
-#     github: git@github.com:shlyren/shlyren.github.io.git
-#     aliyun: root@106.14.9.43:repos/yuxiang.ren.git
-#     vps: root@45.32.54.225:repos/yuxiang.ren.git
-#   branch: origin
+deploy:
+  type: git
+  repo: 
+    github: git@github.com:shlyren/shlyren.github.io.git
+    aliyun: root@106.14.9.43:repos/yuxiang.ren.git
+    vps: root@45.32.54.225:repos/yuxiang.ren.git
+  branch: origin
 
 # deploy:
 #   type: git
