@@ -1,6 +1,7 @@
 ---
 title: 网站大事记
 date: 2016-12-02 09:52:46
+layout: single-column
 ---
 
 **2017/8**

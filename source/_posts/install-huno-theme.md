@@ -2,14 +2,13 @@
 title: hexo安装huno主题
 date: 2016-12-02 09:40:39
 categories: 教程
-tags: [教程 Hexo]
+tags: [命令, Hexo]
+layout: single-column
 ---
 
 # Huno
 
 Huno是为[Hexo](http://hexo.io/)编写的一个响应式的主题，该主题基于[Uno](https://github.com/daleanthony/uno/)。
-
-<!-- more -->
 
 ## Demo
 

@@ -2,8 +2,8 @@
 title: 在vps上安装hexo并且使用git更新
 date: 2016-12-02 11:28:17
 categories: 教程
-tags: [教程 Hexo]
-
+tags: [命令, Ubuntu, Hexo]
+layout: single-column
 ---
 
 
@@ -13,8 +13,6 @@ tags: [教程 Hexo]
 
 ## 二、搭建过程
 >搭建分为两个部分:一部分在本机(Mac)进行，另一部分则在服务端(VPS)进行，大致需要完成的工作是在本机和服务器各安装一次Hexo和Git，并在服务器上安装Nginx服务器、配置Git Hooks以实现更新.并且全程使用终端命令完成。
-
-<!-- more -->
 
 #### 本地电脑配置
 1. 安装Homebrew

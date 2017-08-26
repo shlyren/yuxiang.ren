@@ -3,6 +3,7 @@ title: OC学习
 date: 2017-03-30 14:53:12
 categories: iOS
 tags: Objective-C
+layout: single-column
 ---
 
 1. `+load`和`+initialize`区别
@@ -19,8 +20,6 @@ tags: Objective-C
      * 遍历类中所有属性和方法,可以自己写一套字典转模型工具类
      * 动态给分类添加属性,需求:当想把一个属性保存系统的类中交换方法,系统方法达不到我们需求,想给系统的方法扩充一些功能
      * 动态添加方法
-
-     <!-- more -->
 
 3. `bounds`理解
 

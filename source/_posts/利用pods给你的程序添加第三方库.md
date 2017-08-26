@@ -2,7 +2,8 @@
 title: 利用pods给你的程序添加第三方库
 date: 2016-03-21 14:31:45
 categories: 教程
-tags: CocoaPods
+tags: [命令, MacOS]
+layout: single-column
 ---
 
 ## CocoaPods的安装
@@ -14,7 +15,7 @@ tags: CocoaPods
         Unable to download data from https://rubygems.org/ - Errno::ETIMEDOUT: Operation timed out - connect(2) (https://rubygems.org/latest_specs.4.8.gz)
         ERROR: Possible alternatives: cocoapods
 
-<!-- more -->
+
 * 这是因为ruby的软件源rubygems.org因为使用亚马逊的云服务，被我天朝屏蔽了，需要更新一下ruby的源，过程如下：
 
 ```

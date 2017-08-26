@@ -3,14 +3,13 @@ title: Swift学习笔记01
 date: 2016-04-23 22:40:24
 categories: iOS
 tags: Swift
+layout: single-column
 ---
 
 ### 一、常量&变量
 1. 常量的使用注意
 * 优先使用常量
 * 常量的本质：保存的是内存地址,不可更改,但可以通过内存地址拿到对应的对象,修改对象的属性.
-
-<!-- more -->
 
 ### 二、数据类型
 1. 整型与浮点型
@@ -115,13 +114,13 @@ tags: Swift
  ```
 
 ### 六、数组
- 1. 定义数组
+    1. 定义数组
   * 不可变数组:`let arr = ["www", "shlyren"]`
   * 可遍数组:`var arrM = [String]()`
- 2. 遍历数组
+    2. 遍历数组
   * `for value in arr{print(valur)}`
   * `for (index, value) in array.enumerate() {print(index); print(value)}`
- 3. 数组的合并
+    3. 数组的合并
   * 相同类型的数组可以现价合并
 
 ### 七、字典

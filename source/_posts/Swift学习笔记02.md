@@ -3,6 +3,7 @@ title: Swift学习笔记02
 date: 2016-04-24 15:34:28
 categories: iOS
 tags: [Swift]
+layout: single-column
 ---
 
 ### 一、类型转换
@@ -13,7 +14,6 @@ tags: [Swift]
 #### 2. as? as!
 * as?: 将AnyObject转成可选类型,通过判断可选类型是否有值,来决定是否转换成功
 * as!: 将AngObject转成具体类型,但是如果不是该类型程勋会崩溃
-  <!-- more -->
 
 ```swift
 let arr : [AnyObject] = ["ren", 20, 1.77]
@@ -345,7 +345,7 @@ tmpFunc(20, 30) // 50
       }
    }
  ```
- ---
+---
 
 ### 五、类的使用
 #### 1. 类的介绍和定义

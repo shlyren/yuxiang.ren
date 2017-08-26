@@ -3,6 +3,7 @@ title: 'const,static,extern简介'
 date: 2016-03-26 19:30:15
 categories: iOS
 tags: Objective-C
+layout: single-column
 ---
 
 ## const与宏的区别(面试题):
@@ -13,7 +14,6 @@ tags: Objective-C
       * `宏的好处`:宏能定义一些函数,方法,const不能.
       * `宏的坏处`:使用大量红,容易造成编译时间久,每次都需要重新替换.
 
-<!-- more -->
 　　**注意:**很多blog都说使用宏会消耗很多内存,但我这验证并不会生成很多内存,宏定义的是常量,常量都放在常量区,只会产生一份内存.
 ​    
 ## const

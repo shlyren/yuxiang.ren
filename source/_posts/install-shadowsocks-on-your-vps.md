@@ -2,7 +2,8 @@
 title: 安装shadowsocks
 date: 2017-03-30 14:39:09
 categories: 教程
-tags: [教程 翻墙]
+tags: [命令, 翻墙]
+layout: single-column
 ---
 
 
@@ -22,8 +23,6 @@ tags: [教程 翻墙]
    ```Shell
    pip install shadowsocks
    ```
-
-<!-- more -->
 
 ##2.  配置信息
 

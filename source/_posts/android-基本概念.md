@@ -3,6 +3,7 @@ title: android-基本概念
 date: 2017-03-24 09:23:22
 categories: Android
 tags: Android
+layout: single-column
 ---
 
 
@@ -16,8 +17,6 @@ Android的一些基本的概念, 名词解释等.....
 3. 帧布局
 4. 表格布局
 5. 绝对布局
-
-<!-- more -->
 
 ## 2. 数据存储的几种方式
 

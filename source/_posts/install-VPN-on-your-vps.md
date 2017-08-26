@@ -2,8 +2,8 @@
 title: install VPN on your vps
 date: 2017-01-16 15:25:07
 categories: 教程
-tags: [教程 翻墙]
-
+tags: [命令, 翻墙]
+layout: single-column
 ---
 
 ### 一、安装环境
@@ -25,8 +25,6 @@ cat /dev/ppp
 * 必须返回是`cat: /dev/ppp: No such device or address`
 
 如果不是, 请联系你的vps提供商
-
-<!-- more -->
 
 ### 三、安装脚本
 

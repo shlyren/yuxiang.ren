@@ -2,7 +2,8 @@
 title: 在Mac上配置Rect Native开发环境
 date: 2017-03-30 15:06:25
 categories: 教程
-tags: [教程 MacOS]
+tags: [命令, MacOS]
+Layout: single-column
 ---
 
 
@@ -28,8 +29,6 @@ ruby -e "$(curl -fsSL <a href="https://raw.githubusercontent.com/Homebrew/instal
    bew install flow
    ```
 
-
-<!-- more -->
 
 ### 二. ios环境
 

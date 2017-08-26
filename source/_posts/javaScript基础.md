@@ -1,8 +1,9 @@
 ---
 title: javaScript基础
 date: 2017-05-22 09:00:05
-categories: HTMl
-tags: javaScript html
+categories: html
+tags: [javaScript, html]
+layout: single-column
 ---
 
 # 一、函数
@@ -39,8 +40,6 @@ tags: javaScript html
 
    * 调用函数的时候是通过函数名调用的,
    * 定义函数的时候不能聪明.
-
-<!-- more -->
 
 ## 2. 函数劫持
 

@@ -1,6 +1,7 @@
 ---
 title: 关于
 date: 2016-12-02 09:52:46
+layout: single-column
 ---
 
 我是一名iOS开发者.

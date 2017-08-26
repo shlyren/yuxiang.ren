@@ -1,8 +1,9 @@
 ---
 title: linux常用命令
 date: 2017-03-31 14:32:42
-categories: 命令
-tags: 命令
+categories: 教程
+tags: [命令]
+layout: single-column
 ---
 
 ### 一. 系统清理
@@ -23,8 +24,6 @@ tags: 命令
      ```shell
      sudo apt-get autoclean
      ```
-
-   <!-- more -->
 
 3. remove 删除特定软件
 

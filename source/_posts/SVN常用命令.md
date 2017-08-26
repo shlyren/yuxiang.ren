@@ -1,8 +1,9 @@
 ---
 title: SVN常用命令
 date: 2017-05-16 08:56:21
-categories: 命令
+categories: 教程
 tags: 命令
+layout: single-column
 ---
 
 
@@ -33,7 +34,6 @@ tags: 命令
 
    `svn up`
 
-<!-- more -->
 
 5. 查看文件或者目录状态
    * `svn status`: 【?：不在svn的控制中；M：内容被修改；C：发生冲突；A：预定加入到版本库；K：被锁定】

@@ -1,8 +1,9 @@
 ---
 title: ViewController滚动标题
 date: 2017-08-10 17:20:52
-categories: Objective-C
+categories: iOS
 tags: Objective-C
+layout: single-column
 ---
 
 
@@ -10,8 +11,6 @@ tags: Objective-C
 默认情况下控制器标题过长导致无法全部显示, 解决此问题就要让标题可以滚动.
 
 实现很简单, 只要把`navigationItem.titleView`赋值一个`UIScrollView`, 并且让这个`UIScrollView`自动滚动就可以了.
-
-<!-- more -->
 
 # 一. 定义一个创建一个继承与UIScrollerView的类
 

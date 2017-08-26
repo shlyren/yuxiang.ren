@@ -2,14 +2,15 @@
 title: 在Nginx上部署Let's Encrypt证书
 date: 2017-08-25 22:42:05
 categories: 教程
-tags: 教程
+tags: [命令, Ubuntu]
+layout: single-column
 ---
 
 1. 安装git, 已安装可忽略
 
    ```ruby
-   apt-get update
-   apt-get -y install git
+   apt update
+   apt -y install git
    ```
 
 2. clone Let's Encrypt 源码
@@ -18,8 +19,6 @@ tags: 教程
    git clone https://github.com/letsencrypt/letsencrypt
    ```
 
-
-​	<!-- more -->
 
 3. 关闭nginx
 
@@ -70,11 +69,11 @@ tags: 教程
 
 10. 把80端口重定向
 
-   ```ruby
-   server {
-    	listen 80;
-   	server_name tangziqing.com *.tangziqing.com;
-   	#rewrite ^(.*)$ https://$host$1$ permanent;
-   	rewrite ^(.*)$ https://tangziqing.com permanent;
-   }
-   ```
+  ```ruby
+  server {
+   	listen 80;
+  	server_name tangziqing.com *.tangziqing.com;
+  	#rewrite ^(.*)$ https://$host$1$ permanent;
+  	rewrite ^(.*)$ https://tangziqing.com permanent;
+  }
+  ```

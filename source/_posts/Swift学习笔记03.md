@@ -3,6 +3,7 @@ title: Swift学习笔记03
 date: 2016-04-26 18:08:29
 categories: iOS
 tags: [Swift]
+layout: single-column
 ---
 
 ## 一、三大特性
@@ -13,8 +14,6 @@ tags: [Swift]
     * 父类指针指向子类对象
 * 如果子类对父类的方法不满意， 可以对福列的方法进行重写
     * 在Swift中如果对弗雷德方法进行个重写,必须在`func`前加`override`
-
-<!-- more -->
 
 ### 2. 重载
 * 重载的使用场景

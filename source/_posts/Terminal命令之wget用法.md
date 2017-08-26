@@ -1,8 +1,9 @@
 ---
 title: Terminal命令之wget用法
 date: 2017-04-27 16:09:45
-categories: 命令
+categories: 教程
 tags: 命令
+layout: single-column
 ---
 
 
@@ -17,8 +18,6 @@ tags: 命令
 6. 安装: `brew install wget`
 
 wget语法: wget<参数> 文件url
-
-<!-- more -->
 
 # 下载http/ftp站点
 

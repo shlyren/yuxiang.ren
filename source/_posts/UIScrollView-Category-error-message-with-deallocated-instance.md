@@ -1,8 +1,9 @@
 ---
 title: 重写UIScrollView分类dealloc错误
 date: 2016-12-06 09:25:01
-categories: error
-tags: [Xcode, error]
+categories: iOS
+tags: [Objective-C]
+layout: single-column
 ---
 
 > [UIScrollView _systemGestureStateChanged:]: message sent to deallocated instance> 错误解决方法
@@ -14,8 +15,6 @@ tags: [Xcode, error]
 就是普通的僵尸对象错误, 可是解决就不是那么简单了...
 
 我翻边了各大国内过外网站, 终于再一个不显眼的地方看到了大致是因为在`UIScrollView`分类重写了`dealloc`方法导致.
-
-<!-- more -->
 
 于是我去项目里看一下`UIScrollView`的分类. 果真, 这个第三方重写了`dealoc`, 把它注释掉果然没有出现僵尸对象了.
 

@@ -3,6 +3,7 @@ title: runtime
 date: 2016-03-26 21:19:40
 categories: iOS
 tags: Objective-C
+layout: single-column
 ---
 
 ## runtime简介
@@ -13,7 +14,6 @@ tags: Objective-C
 * 在编译阶段,CO可以`调用任何函数`,即使这个函数未实现,只要声明过就不会报错.
 * 在编译阶段,C语言调用`未实现的函数就会报错`.
 
-<!-- more -->
 ## runtime作用
 ### 发送消息
 *  方法调用的本质,就是让对象发送消息.

@@ -2,8 +2,9 @@
 title: 在阿里云上使用hexo并且用git更新
 date: 2017-4-24 11:28:17
 categories: 教程
-tags: [教程,命令]
-
+tags: [Hexo, 命令, Ubuntu]
+layout: single-column
+toc: true
 ---
 
 本文基于https://hexo.io 博客框架. 基于Node.js
@@ -11,11 +12,11 @@ tags: [教程,命令]
 * 本文在<a href="/2016/12/02/install-hexo-on-vps-and-update-with-git/">原文</a>基础上加以修改完善
 * 本文所使用的阿里云服务器系统为: `Ubuntu 16.04.2 LTS`
 * 本地测试环境为: `MacOS 10.12.4`
-* 本文为本人自己搭建博客环境时所记录的步骤, 他人按照此步骤 可能会出现我没有遇到的问题, 请自行百度/google
+* 本文为本人自己搭建博客环境时所记录的步骤, 他人按照此步骤 可能会出现我没有遇到的问题, 可以一起讨论
 * 本文非图文并茂, 全程都是命令行, 也没有什么图可以贴的
 * 为了防止命令输入错误, 可以直接`command+c`
 * 大致为: 在本地电脑上使用hexo撰写文章, 部署并测试成功后, 通过git提交到服务器上.完成博客的更新
-  1. 首先在服务器上部署web环境,以及git等
+  1. 首先在服务器上部署web环境(nginx),以及git等
   2. 然后在本地电脑上安装hexo, git等所需环境
   3. 撰写文章并且更新
   4. 其他完善: 主题, 插件,SEO等...
@@ -25,10 +26,8 @@ tags: [教程,命令]
 
 1. 云服务器: 这里我使用的阿里云服务器ECS, 需要配置web环境,git等
 2. 本地测试环境: 需要安装hexo, git等
-3. 域名(非必须)
+3. 域名(非必要)
 
-
-<!-- more -->
 
 # 二. 配置服务器端
 
@@ -61,9 +60,9 @@ tags: [教程,命令]
      cd ~
      mkdir repos && cd repos
      mkdir yuxiang.ren.git && cd yuxiang.ren.git #yuxiang.ren.git 为存放博客的git仓库(.git后缀) 名称并没有什么要求, 我只是为了方便才这样写的
-     git init --bare
+     git init --bare #初始化一个裸仓库
      cd hooks
-     touch post-receive
+     touch post-receive # 这个文件是用来监听每次有push操作时执行文件里的命令,
      vi post-receive #此命令是编辑`post-receive`文件, 也可在本地编辑完上传到对应目录替换
      ```
 
@@ -73,13 +72,13 @@ tags: [教程,命令]
 
    ```bash
    #!/bin/bash -l
-   GIT_REPO=$HOME/repos/yuxiang.ren.git
-   TMP_GIT_CLONE=$HOME/tmp/git/renyuxiang.ren
-   PUBLIC_WWW=/var/www/yuxiang.ren #网站的根目录 如果`wwww/` 下没有该文件夹 需要手动创建
-   rm -rf ${TMP_GIT_CLONE}
-   git clone $GIT_REPO $TMP_GIT_CLONE
-   rm -rf ${PUBLIC_WWW}/*
-   cp -rf ${TMP_GIT_CLONE}/* ${PUBLIC_WWW}
+   GIT_REPO=$HOME/repos/yuxiang.ren.git #git仓库目录
+   TMP_GIT_CLONE=$HOME/tmp/git/renyuxiang.ren #git临时仓库
+   PUBLIC_WWW=/var/www/yuxiang.ren #博客的根目录 如果`wwww/` 下没有该文件夹 需要手动创建
+   rm -rf ${TMP_GIT_CLONE} #删除临时仓库
+   git clone $GIT_REPO $TMP_GIT_CLONE #拷贝到临时仓库
+   rm -rf ${PUBLIC_WWW}/* #删除博客目录所有内容
+   cp -rf ${TMP_GIT_CLONE}/* ${PUBLIC_WWW} # 将仓库文件拷贝到博客目录
    cd ~
    exit
    ```
@@ -98,7 +97,7 @@ tags: [教程,命令]
      server {
      	 listen 80; # 监听80端口(http), 如需配置https 可自行百度
           server_name yuxiang.ren www.yuxiang.ren; # URL名字, 需要去域名服务商解析, 如何解析 自己百度
-     	 root /var/www/yuxiang.ren/public/; # 这个是网站的根目录 要与上面`PUBLIC_WWW`一致
+     	 root /var/www/yuxiang.ren/public/; # 这个是网站的根目录
      	 index index.html index.htm index.txt; #这个是让nginx默认读取的文件名
      }
      ```
@@ -133,8 +132,8 @@ tags: [教程,命令]
    - `git clone root@106.14.9.43:repos/yuxiang.ren.git`
      - `106.14.9.43` 为主机ip地址
      - `repos/yuxiang.ren.git` 为博客的仓库路径
-   - 会让你输入服务器登录密码
-   - 然后clone一份空的git仓库
+   - 会让你输入服务器登录密码(私钥无视)
+   - 然后会将远程仓库clone到本地
 
 5. 给本地电脑安装`Hexo`
 
@@ -228,6 +227,8 @@ tags: [教程,命令]
    git commit -m "操作内容"
    git push
    ```
+
+6. 每次这样提交会很麻烦可以使用<a href="/2017/08/25/hexo博客自动部署到多台服务器/" target="_brank">hexo博客自动部署到多台服务器</a>方法
 
 
 # 七. 域名绑定
