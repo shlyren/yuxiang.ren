@@ -45,6 +45,16 @@ layout: single-column
    sudo apt-get autoremove
    ```
 
+6. 处理登录提示有软件包未更新
+
+   ```bash
+   apt-get update && apt-get dist-upgrade
+   ```
+
+   ​
+
+7. ​
+
 ### 二. 磁盘相关命令
 
 1. `df -lh`
@@ -112,4 +122,5 @@ layout: single-column
    ```shell
    git config core.autocrlf false
    ```
+
 

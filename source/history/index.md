@@ -7,7 +7,7 @@ layout: single-column
 **2017/8**
 
 - 好景不长,网易云跟帖停止服务,故换为友言评论;
-- 然而友言不支持https, 所以换为disqus(被墙);
+- 然而友言不支持https, 所以换为畅言(好在网站备案了);
 - 由于有两台vps, 所以启用了负载均衡😆😆😆;
 
 **2017/4**
@@ -32,9 +32,9 @@ layout: single-column
 **2016/3**
 - 第一次尝试在vps上搭建博客, 用的是vultr的日本机房;
 - 采纳了朋友的建议使用了hexo环境搭建, 第一次折腾了很久;
-- 同时也搭建了翻墙环境, 以及<a href="https://google.yuxiang.ren">Google代理....</a>;
+- 同时也搭建了翻墙环境, 以及<a href="https://google.yuxiang.ren">Google代理</a>....;
 
 **2015/3**
 
-- 第一次注册域名, 那时候什么都不懂, 只能将域名重定向到我的<a href="http://weibo.com/shlyjen">微博</a>;
+- 第一次注册域名, 那时候什么都不懂, 只能将域名重定向到我的微博<a href="http://weibo.com/shlyjen">@任玉祥丶</a>;
 - 使用自己的域名作为邮箱:<a href="mailto:mail@yuxiang.ren">mail@yuxiang.ren</a>

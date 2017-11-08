@@ -2,7 +2,7 @@
 title: 利用pods给你的程序添加第三方库
 date: 2016-03-21 14:31:45
 categories: 教程
-tags: [命令, MacOS]
+tags: [命令, MacOS, CocoaPods]
 layout: single-column
 ---
 

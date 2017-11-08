@@ -4,8 +4,8 @@
 
 # Site
 title: 任玉祥
-subtitle: 任玉祥的博客
-description: 任玉祥的博客-软件开发、移动开发、iOS
+subtitle: baixiaotu.cc
+description: iOS developer
 keywords: 任玉祥,iOS,developer,Android,html,开发,Apple,Objective-C,Swift,JAVA
 author: 任玉祥
 language: zh-CN
@@ -23,7 +23,7 @@ permalink_defaults:
 source_dir: source
 public_dir: public
 tag_dir: tags
-archive_dir: archives
+archive_dir: archive
 category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
@@ -107,7 +107,7 @@ deploy:
   repo: 
     github: git@github.com:shlyren/shlyren.github.io.git
     aliyun: root@106.14.9.43:repos/yuxiang.ren.git
-    vps: root@45.32.54.225:repos/yuxiang.ren.git
+    yuxiang: root@47.89.12.106:repos/yuxiang.ren.git
   branch: origin
 
 # deploy:
