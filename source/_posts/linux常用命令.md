@@ -112,13 +112,11 @@ layout: single-column
    ```
 
 5. 查看所有标签
-
    ```shell
    git tag
    ```
 
 6. `git warning: LF will be replaced by CRLF in `解决办法
-
    ```shell
    git config core.autocrlf false
    ```

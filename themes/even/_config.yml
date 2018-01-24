@@ -1,0 +1,112 @@
+# ===========================================
+# Site Information Settings
+# ===========================================
+
+# Site creation time
+since: 2016
+
+# languages: zh-cn
+
+per_page: 10
+
+# Custom your favicon.ico in `site/source`
+favicon: /favicon.ico
+
+
+
+# Set feed link (false | default | your feed link)
+# false: disable
+# default: use `atom.xml`, generator for `hexo-generator-feed`
+rss: false
+
+# ===========================================
+# Menu Settings
+# ===========================================
+menu:
+  Home: /
+  Archives: archive/
+  Tags: tags/
+  Categories: categories/
+  About: about/
+  History: history/
+  google: https://google.yuxiang.ren
+    
+
+# ===========================================
+# Theme Settings
+# ===========================================
+# theme styling
+# color: Default | Mint Green | Cobalt Blue | Hot Pink | Dark Violet
+theme:
+  color: Default
+  toc: true
+  fancybox: true
+
+copyright:
+  enable: true
+  license: '<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>'
+
+reward:
+  enable: false
+  qrCode:
+    wechat:
+    alipay:
+
+# ===========================================
+# Social links Settings
+# ===========================================
+social:
+  email: mail@yuxiang.ren
+  stack-overflow:
+  twitter: https://twitter.com/shlyren
+  facebook: https://facebook.com/shlyren
+  linkedin:
+  google: 
+  github: https://github.com/shlyren
+  weibo: https://weibo.com/shlyjen
+  zhihu:
+  douban:
+  pocket:
+  tumblr:
+  instagram:
+  
+
+link:
+  sourceCode: https://github.com/shlyren/shlyren.github.io
+  icp: http://www.miitbeian.gov.cn
+  beian: http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602008160
+  beianIcon: https://renyuxiang.oss-cn-shanghai.aliyuncs.com/file/beian.png
+# ===========================================
+# Third Party Services Settings
+# ===========================================
+
+# LeanCloud
+leancloud:
+  app_id:
+  app_key:
+
+# Baidu Analytics
+baidu_analytics: e8f9e28039f9f75405d07e7e7bbad3b6
+# Baidu Verification
+baidu_verification:
+
+# Google Analytics
+google_analytics:
+# Google Verification
+google_verification:
+
+# Disqus
+disqus_shortname:
+
+#Changyan
+changyan:
+  appid: cyt9QnYLl
+  appkey: b091d0d5823bc283730869cbb5ebf15f
+
+#LiveRe
+livere_datauid:
+
+# ===========================================
+# Version
+# ===========================================
+version: 2.6.0

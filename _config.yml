@@ -8,7 +8,7 @@ subtitle: baixiaotu.cc
 description: iOS developer
 keywords: 任玉祥,iOS,developer,Android,html,开发,Apple,Objective-C,Swift,JAVA
 author: 任玉祥
-language: zh-CN
+language: zh-cn
 timezone:
 since: 2015
 
@@ -22,9 +22,9 @@ permalink_defaults:
 # Directory
 source_dir: source
 public_dir: public
-tag_dir: tags
+tag_dir: tag
 archive_dir: archive
-category_dir: categories
+category_dir: category
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
@@ -65,7 +65,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: maupassant
+theme: even
 
 
 # Social
