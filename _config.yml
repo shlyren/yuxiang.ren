@@ -107,7 +107,7 @@ deploy:
   type: git
   repo: 
     aliyun: root@106.14.9.43:repos/yuxiang.ren.git
-    yuxiang: root@47.89.12.106:repos/yuxiang.ren.git
+  # yuxiang: root@47.89.12.106:repos/yuxiang.ren.git
     github: git@github.com:shlyren/shlyren.github.io.git
   branch: origin
 
