@@ -38,7 +38,23 @@ layout: single-column
    ./letsencrypt-auto certonly --standalone
    ```
 
-6. 然后会让你输入各种信息, 反正基本上选择yes什么的, 下面我贴上我申请时的终端信息
+6. 如果出现报错:
+
+   ```
+   OSError: Command /opt/eff.org/certbot/venv/bin/python2.7 - setuptools pkg_resources pip wheel failed with error code 2
+   ```
+
+   执行下面命令:
+
+   ```bash
+   sudo apt-get install letsencryp
+   apt-get purge python-virtualenv python3-virtualenv virtualenv
+   pip install virtualenv
+   ```
+
+   然后重新执行第五步.
+
+7. 然后会让你输入各种信息, 反正基本上选择yes什么的, 下面我贴上我申请时的终端信息
 
    ```bash
    service nginx stop #停止nginx
