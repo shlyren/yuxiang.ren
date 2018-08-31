@@ -141,7 +141,7 @@ layout: single-column
 ```
 ### 发布
 进入网站根目录
-```ruby
+```bash
 hexo d -fg
 git add .
 git commit -m "操作内容"
