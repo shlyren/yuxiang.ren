@@ -5,8 +5,6 @@ layout: single-column
 tags: [笔记, OC]
 ---
 
-[TOC]
-
 ### KVO
 
 > KVO全程为key-value observing，即键值监听。通常用于监听实例对象某个属性值的变化的。
