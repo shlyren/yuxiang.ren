@@ -17,7 +17,7 @@
 
   <span class="theme-info">
     <a href="{{ theme.link.icp }}" target="_blank" style="display:inline-block;height:20px;line-height:20px;">
-    <p class="theme-link" style="float:left;margin: 0px 0px 0px 5px"> 浙ICP备17016497号-1</p>
+    <p class="theme-link" style="float:left;margin: 0px 0px 0px 5px"> 苏ICP备19062590号-1</p>
     </a>
     <a style="display:inline-block;line-height:20px;"> | </a>
     <a href="{{ theme.link.beian }}" target="_blank" style="display:inline-block;line-height:20px;">

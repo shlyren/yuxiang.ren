@@ -14,7 +14,7 @@ tags: [教程, Shadowsocks]
 wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/ssr.sh && chmod +x ssr.sh && bash ssr.sh
 ```
 
-原文: http://liyuans.com/archives/ssr-serverspeeder-onekey.html
+原文: https://github.com/ToyoDAdoubi/doubi#ssrsh
 
 
 
