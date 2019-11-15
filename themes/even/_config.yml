@@ -10,7 +10,7 @@ since: 2016
 per_page: 10
 
 # Custom your favicon.ico in `site/source`
-favicon: /favicon.ico
+favicon: //source.yuxiang.ren/favicon_yuxiang.ico
 
 
 
