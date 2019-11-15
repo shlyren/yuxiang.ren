@@ -2,7 +2,7 @@
 title: KVO及KVC
 categories: 笔记
 layout: single-column
-tags: [笔记, OC]
+tags: [笔记, Objective-C]
 ---
 
 ### KVO

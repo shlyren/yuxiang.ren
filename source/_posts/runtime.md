@@ -1,386 +1,512 @@
 ---
-title: runtime
-date: 2016-03-26 21:19:40
-categories: iOS
-tags: Objective-C
+title: Runtime
+categories: 笔记
 layout: single-column
+tags: [笔记, Objective-C]
 ---
 
-## runtime简介
-1. Runtime简称运行时,OC就是`运行时机制`,也就是在运行时候的一些机制,其中最主要的是消息机制.
-2. 对于C语言,`函数的调用在编译的时候回决定调用哪个函数`.
-3. 对于OC的函数,属于`动态调用过程`,在编译的时候并不能决定真正调用哪个函数,只要在真正运行的时候才会根据函数的名称找到对应的函数来调用.
-4. 事实证明:
-* 在编译阶段,CO可以`调用任何函数`,即使这个函数未实现,只要声明过就不会报错.
-* 在编译阶段,C语言调用`未实现的函数就会报错`.
 
-## runtime作用
-### 发送消息
-*  方法调用的本质,就是让对象发送消息.
-* `objc_msgSeng`:只有对象才能发送消息,因此以`objc`开头.
-* 使用`消息机制`前提,必须要导入`<objc/message.h>`文件.
-* 消息机制的简单使用
-  * clang -rewrite-objc main.m 查看最终生成代码
 
-   ```objc
-     Person *p = [[Person alloc] init];
-     // 调用对象方法
-     [p eat];
-     objc_msgSend(p, @selector(eat));// 本质：让对象发送消息
+### 简介
 
-     // 调用类方法的方式：两种
-     // 第一种通过类名调用
-     [Person eat];
-     // 第二种通过类对象调用
-     [[Person class] eat];
+- Objective-C是一门动态性特别强的变成语言，跟C、C++等语言有着很大的不同
 
-     // 用类名调用类方法，底层会自动把类名转换成类对象调用
-     // 本质：让类对象发送消息
-     objc_msgSend([Person class], @selector(eat));
-   ```
-  * 消息机制原理:对象根据方法编号`SEL`去映射表查找对应的方法实现
+- Objective-C的动态特性是有Runtime API来支撑的
 
-### 交换方法
-*  开发使用场景:系统自带的方法功能不够,给系统自带的方法扩张一些功能,并且保持原有的功能.
+- Runtime API提供的接口基本上是C语言的，源码由C/C++汇编语言编写
 
-* 方式一:继承系统的类,重写方法.
 
-* 方式二:使用runtime,交换方法
 
-  ```objc
-  @implementation ViewController
-  - (void)viewDidLoad 
-  {
-     [super viewDidLoad];
-     // 需求：给imageNamed方法提供功能，每次加载图片就判断下图片是否加载成功。
-     // 步骤一：先搞个分类，定义一个能加载图片并且能打印的方法
-     //+ (instancetype)imageWithName:(NSString *)name;
-     // 步骤二：交换imageNamed和imageWithName的实现，就能调用imageWithName，间接调用imageWithName的实现。
-     UIImage *image = [UIImage imageNamed:@"123"];
-  }
-  @end
-  ```
+### isa详解-位域
 
-  ```objc
-  @implementation UIImage (Image)
-   // 加载分类到内存的时候调用
-   + (void)load
-   {
-      // 交换方法
-      // 获取imageWithName方法地址
-      Method imageWithName = class_getClassMethod(self,  @selector(imageWithName:));
-      // 获取imageWithName方法地址
-      Method imageName = class_getClassMethod(self, @selector(imageNamed:));
-      // 交换方法地址，相当于交换实现方式
-      method_exchangeImplementations(imageWithName, imageName);
-   }
+​	![对象的isa](https://i.loli.net/2019/04/17/5cb6c704318de.png)
 
-     // 不能在分类中重写系统方法imageNamed，因为会把系统的功能给覆盖掉，而且分类中不能调用super.
-     // 既能加载图片又能打印
-   + (instancetype)imageWithName:(NSString *)name
-   {
-      // 这里调用imageWithName，相当于调用imageName
-      UIImage *image = [self imageWithName:name];
-      if (image == nil) 
-      {
-          NSLog(@"加载空的图片");
-      }
-      return image;
-   }
-  ```
 
-  ​
 
-### 动态添加方法
-*  开发使用场景:如果一个类方法非常多,加载类到内存的时候也比较耗费资源,需给每个方法生成映射表,可以使用动态给某个类添加方法解决.
-* 经典面试题:有没有使用过performSelector,其实主要实现问你有没有动态添加过方法.
-* 简单使用.
+- 想要学习Runtime，首先要了解他底层的一些常用数据结构，比如isa指针
 
-  ```objc
-  - (void)viewDidLoad {
-    [super viewDidLoad];
-    Person *p = [[Person alloc] init];
+- 在arm64架构之前，isa就是一个普通的指针，存储着Class、Meta-Class对象的内存地址
 
-    // 默认person，没有实现eat方法，可以通过performSelector调用，但是会报错。
-    // 动态添加方法就不会报错
-    [p performSelector:@selector(eat)];
-  }
-  ```
-  ```objc
-    @implementation Person
-    // void(*)()
-    // 默认方法都有两个隐式参数，
-    void eat(id self,SEL sel)
-    {
-        NSLog(@"%@ %@",self,NSStringFromSelector(sel));
-    }
+- 从arm64架构开始，对isa进行了优化，变成了一个共用体(union)结构，还使用**位域**来存储更多的信息
 
-    // 当一个对象调用未实现的方法，会调用这个方法处理,并且会把对应的方法列表传过来.
-    // 刚好可以用来判断，未实现的方法是不是我们想要动态添加的方法
-     + (BOOL)resolveInstanceMethod:(SEL)sel
-     {
-        if (sel == @selector(eat)) 
-        {
-            /* 
-                动态添加eat方法
-                 第一个参数：给哪个类添加方法
-                 第二个参数：添加方法的方法编号
-                 第三个参数：添加方法的函数实现（函数地址）
-                 第四个参数：函数的类型，(返回值+参数类型) v:void @:对象->self :表示SEL->_cmd
-             */
-            class_addMethod(self, @selector(eat), eat, "v@:");
-        }
-        
-        return [super resolveInstanceMethod:sel];
-     }
-     @end
-  ```
+  ![isa.png](https://i.loli.net/2019/04/17/5cb6ad4fd4316.png)
 
-### 给分类添加属性
-*   原理:给一个类声明属性,其实本质就是给这个类添加关联,并不是直接把这个值得内存空间添加到类的空间.
+   - nonpointer
+     - 0：代表普通的指针，存储着Class、Meta-Class对象的内存地址
+     - 1：代表优化过，使用位域存储更多的信息
+  - has_assoc
+    - 是否有设置过关联对象。如果没有，释放时会更快
+  - has_cxx_dtor
+    - 是否有C++的析构函数(.cxx_destruct)，如果没有释放时会更快
+  - shiftcls
+    - 存储着Class、Meta-Class对象的内存地址信息
+  - magic
+    - 用于在调试时分辨对象是否未完成初始化
+  - weakly_referenced
+    - 是否有被弱引用只想过，如果没有，释放时会更快
+  - deallocating
+    - 对象是否正在释放
+  - extra_rc
+    - 里面存储的值是引用计数器减1
+  - has_sidetable_rc
+    - 引用计数器是否过大无法存储在isa中
+    - 如果为1，那么引用计数会存储在一个叫SideTable的类的属性中
 
-  ```objc
-  - (void)viewDidLoad 
-  {
-        [super viewDidLoad];
-        // 给系统NSObject类动态添加属性name
-        NSObject *objc = [[NSObject alloc] init];
-        objc.name = @"jen";
-        NSLog(@"%@",objc.name);
-  }
-  ```
- ```objective-c
 
- @implementation NSObject (Property)
- static const char *key = "name";// 定义关联的key
- - (NSString *)name
- {
-      // 根据关联的key，获取关联的值。
-      return objc_getAssociatedObject(self, key);
-  }
-    
-  - (void)setName:(NSString *)name
-  {
-      // 第一个参数：给哪个对象添加关联
-      // 第二个参数：关联的key，通过这个key获取
-      // 第三个参数：关联的value
-      // 第四个参数:关联的策略
-      objc_setAssociatedObject(self, key, name, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
- }
- @end
- ```
 
-### 字典转模型
-*  设计模型:字典转模型的第一步
-  * 模型属性,通常需要跟字典中的key一一对应
-  * 问题:一个一个的生成模型属性?很慢!
-  * 需求:能不能自动根据一个字典,生成对应的属性.
-  * 解决:提供一个分类,专门根据字典生成对应属性的字符串.
+### 类对象
 
-   ```objc
-    // 自动打印属性字符串
-    + (void)resolveDict:(NSDictionary *)dict
-    {
-        // 拼接属性字符串代码
-        NSMutableString *strM = [NSMutableString string];
+#### class的结构
 
-        // 1.遍历字典，把字典中的所有key取出来，生成对应的属性代码
-        [dict   enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-            // 类型经常变，抽出来
-            NSString *type = nil;
-            if ([obj isKindOfClass:NSClassFromString(@"__NSCFString")]) 
-            {
-                type = @"NSString";
-            }
-            else if ([obj isKindOfClass:NSClassFromString(@"__NSCFArray")])
-            {
-                type = @"NSArray";
-            }
-            else if ([obj isKindOfClass:NSClassFromString(@"__NSCFNumber")])
-            {
-                type = @"int";
-            }
-            else if ([obj isKindOfClass:NSClassFromString(@"__NSCFDictionary")])
-            {
-                type = @"NSDictionary";
-            }
+![class结构.png](https://i.loli.net/2019/04/17/5cb6c84834aae.png)
 
-            // 属性字符串
-            NSString *str = nil;
-            if ([type containsString:@"NS"])
-            {
-                str = [NSString stringWithFormat:@"@property (nonatomic, strong) %@ *%@;",type,key];
-            }
-            else
-            {
-                str = [NSString stringWithFormat:@"@property (nonatomic, assign) %@ %@;",type,key];
-            }
-            // 每生成属性字符串，就自动换行。
-            [strM appendFormat:@"\n%@\n",str];
-        }];
-        NSLog(@"%@",strM);
-    }
-   ```
+#### class_rw_t
 
-#### 字典转模型的方式一:KVC    
-```objc
-+ (instancetype)statusWithDict:(NSDictionary *)dict
-{
-    Status *status = [[self alloc] init];
-    [status setValuesForKeysWithDictionary:dict];
-    return status;
+> class_rw_t里面的methods、properties、protocols是二位数组，是可读可写的包含了类的初始内容、分类内容
+
+![rw_t.png](https://i.loli.net/2019/04/17/5cb6cb1d8eda4.png)
+
+#### class_ro_t
+
+> class_ro_t里面的baseMethodList、baseProtocols、ivars、baseProperties是一维数组，是只读的，包含了类的初始内容
+
+![ro_t.png](https://i.loli.net/2019/04/17/5cb6cbce98993.png)
+
+#### method_t
+
+> method_t是对方法\函数的封装
+
+```objective-c
+struct method_t {
+  SEL name; // 函数名
+  const char *types; // 编码(返回值类型、参数类型)
+  IMP imp; // 指向函数的指针
 }
 ```
-* KVC字典转模型的弊端:必须保证模型中的属性和字典中的key一一对应
-* 如果不一致,就会调用`[<Status 0x7fa74b545d60> setValue:forUndefinedKey:]`方法,报`key`找不到
-* 分析:模型中的属性和字典的key不一一对应,系统就会调用`setValue:forUndefinedKey:`报错.
-* 解决:重写对象的`setValue:forUndefinedKey:`把系统的方法覆盖,就能继续使用KVC字典转模型了
 
-     ```objc
-       - (void)setValue:(id)value forUndefinedKey:(NSString *)key
-       {
-       }
+- IMP代表函数的具体实现
+
+  ```objc
+  typedef id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...);
+  ```
+
+- SEL代表方法\函数名，一般叫做选择器，底层结构跟char*类似
+
+  - 可以通过@seelctor()和sel_registarName()获得
+  - 可以通过sel_getName()和NSStringFromSelector()转成字符串
+  - 不同类中相同名字的方法，所对应的方法选择器是相同的
+
+  ```objc
+  typedef struct objc_selector *SEL;
+  ```
+
+- types包含了函数的返回值、参数编码的字符串，参阅<a id="typeencoding">Type Encoding</a>。
+
+  ![types.png](https://i.loli.net/2019/04/17/5cb6d6470d7f0.png)
+
+#### cache_t
+
+1. Class内部结构中有个方法缓存(cache_t)，用==散列表(哈希值)==来缓存曾经调用过的方法，可以提高方法的查找速度
+
+   ```objective-c
+   struct cache_t {
+     struct bucket_t *_buckets; // 散列表
+     mask_t _mask; // 散列表长度-1
+     mask_t _occupied; // 已经缓存的方法数量
+   }
+   
+   struct bucket_t {
+     cache_key_t _key; // SEL作为key
+     IMP _imp; // 函数的内存地址
+   }
+   ```
+
+2. 缓存查找
+
+   - objc-cache.mm
+
+     ```c++
+     bucket_t * cache_t::find(cache_key_t k, id receiver)
      ```
 
-#### 字典转模型方式二:runtime
-*   思路:利用运行时 便利模型中所有属性,根据属性名,去字典中查找key,取出对应的值,给模型属性赋值.
-  * 步骤:提供一个`NSObject`分类,专门字典转模型,以后所有模型都可以通过这个分类转.
-    ​    
-   ```objc
-   - (void)viewDidLoad 
-   {
-        [super viewDidLoad];
-        
-        // 解析Plist文件
-        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"status.plist" ofType:nil];
-        NSDictionary *statusDict = [NSDictionary dictionaryWithContentsOfFile:filePath];
+#### [Type Encoding](#typeencoding)
 
-        // 获取字典数组
-        NSArray *dictArr = statusDict[@"statuses"];
-        
-        // 自动生成模型的属性字符串
-        [NSObject resolveDict:dictArr[0][@"user"]];
-        _statuses = [NSMutableArray array];
-        
-        // 遍历字典数组
-        for (NSDictionary *dict in dictArr) 
-        {
-            Status *status = [Status modelWithDict:dict]; 
-            [_statuses addObject:status];
-        }
-        // 测试数据
-        NSLog(@"%@ %@",_statuses,[_statuses[0] user]);
-    }
-   ```
-    ```objc
-    @implementation NSObject (Model)
-      // 思路：遍历模型中所有属性-> 使用运行时
-    + (instancetype)modelWithDict:(NSDictionary *)dict
-    {
-        id objc = [[self alloc] init];
+> ios中提供了一个叫做@encode的指令，可以将具体的类型表示成字符串编码
 
-        // 1.利用runtime给对象中的成员属性赋值
-        /*  
-          类似下面这种写法
-          Ivar ivar;
-          Ivar ivar1;
-          Ivar ivar2;
-          Ivar a[] = {ivar,ivar1,ivar2}; // 定义一个ivar的数组a
-          Ivar *ivarList = a; // 用一个Ivar *指针指向数组第一个元素
-          ivarList[0]; // 根据指针访问数组第一个元素
-        */
+|      code      | Meaning                                                      |
+| :------------: | :----------------------------------------------------------- |
+|       c        | A char                                                       |
+|       i        | An int                                                       |
+|       s        | A short                                                      |
+|       l        | A long. l is treated as a 32-bit quantity on 64-bit programs. |
+|       q        | A long long                                                  |
+|       c        | An unsigned char                                             |
+|       I        | An unsigned int                                              |
+|       s        | An unsigned short                                            |
+|       L        | An unsigned long                                             |
+|       Q        | An unsigned long long                                        |
+|       f        | A float                                                      |
+|       d        | A double                                                     |
+|       B        | A C++ bool or a C99 Bool                                     |
+|       v        | A void                                                       |
+|       *        | A character string (char *)                                  |
+|       @        | An object(whether statically typed or typed id)              |
+|       #        | A class object(Class)                                        |
+|       :        | A method selector(SEL)                                       |
+|  [array type]  | An array                                                     |
+| {name=type...} | A structure                                                  |
+| (name=type...) | A union                                                      |
+|      bunm      | A bit field of num bits                                      |
+|     ^type      | A pointer to type                                            |
+|       ?        | An unknow type(among other things, this code is used for function pointers) |
+
+ 
+
+### objc_msgSend
+
+> 消息机制：给方法调用者发送消息
+>
+> OC中的方法调用，其实都是转化为objc_msgSend函数调用
+
+#### 执行流程
+
+objc_msgSend的执行流程分为3大阶段：
+
+##### 消息发送
+
+![msgsend.png](https://i.loli.net/2019/04/18/5cb7d22099d16.png)
+
+   - 如果是从class_rw_t中查找方法
+     - 已经排序：二分查找
+     - 没有排序：便利查找
+
+  - receiver通过isa指针找到receiverClass
+
+  - receiverClass通过superclass指针找到superClass
+
     
-        unsigned int count;
-        /* 
-          获取类中的所有成员属性
-          class_copyIvarList:获取类中的所有成员属性
-          Ivar：成员属性的意思
-          第一个参数：表示获取哪个类中的成员属性
-          第二个参数：表示这个类有多少成员属性，传入一个Int变量地址，会自动给这个变量赋值
-          返回值Ivar *：指的是一个ivar数组，会把所有成员属性放在一个数组中，通过返回的数组就能全部获取到。
-        */
-        Ivar *ivarList = class_copyIvarList(self, &count);
-        
-        for (int i = 0; i < count; i++) 
-        {
-            // 根据角标，从数组取出对应的成员属性
-            Ivar ivar = ivarList[i];
-            
-            // 获取成员属性名
-            NSString *name = [NSString stringWithUTF8String:ivar_getName(ivar)];
-            
-            // 处理成员属性名->字典中的key
-            // 从第一个角标开始截取
-            NSString *key = [name substringFromIndex:1];
-            // 根据成员属性名去字典中查找对应的value
-            id value = dict[key];
 
-            // 二级转换:如果字典中还有字典，也需要把对应的字典转换成模型
-            // 判断下value是否是字典
-            if ([value isKindOfClass:[NSDictionary class]]) 
-            {
-                // 字典转模型
-                // 获取模型的类对象，调用modelWithDict
-                // 模型的类名已知，就是成员属性的类型
+##### 动态方法解析
 
-                // 获取成员属性类型
-                NSString *type = [NSString stringWithUTF8String:ivar_getTypeEncoding(ivar)];
-                // 生成的是这种@"@\"User\"" 类型 -> @"User"  在OC字符串中 \" -> "，\是转义的意思，不占用字符
-                // 裁剪类型字符串
-                NSRange range = [type rangeOfString:@"\""];
-                type = [type substringFromIndex:range.location + range.length];
-                range = [type rangeOfString:@"\""];
+![动态解析.png](https://i.loli.net/2019/04/18/5cb7d6edd9cd6.png)
 
-                // 裁剪到哪个角标，不包括当前角标
-                type = [type substringToIndex:range.location];
+   - 开发者可以实现以下方法来
+     - `+resolveInstanceMethod:`
+     - `+resolveClassMethod:`
+   - 动态解析过后，会重新走“消息发送”的流程
+     - **从receiverClass的cache中查找方法**这一步开始执行
 
-                // 根据字符串类名生成类对象
-                Class modelClass = NSClassFromString(type);
+##### 消息转发
 
-                if (modelClass) // 有对应的模型才需要转
-                {
-                    // 把字典转模型
-                    value  =  [modelClass modelWithDict:value];
-                }
-            }
+![repost.png](https://i.loli.net/2019/04/18/5cb7dad8b51e9.png)
 
-            // 三级转换：NSArray中也是字典，把数组中的字典转换成模型.
-            if ([value isKindOfClass:[NSArray class]]) // 判断值是否是数组
-            {
-                // 判断对应类有没有实现字典数组转模型数组的协议
-                if ([self respondsToSelector:@selector(arrayContainModelClass)])
-                {
-                    // 转换成id类型，就能调用任何对象的方法
-                    id idSelf = self;
+- 开发者可以在`forwardInvocation:`方法中自定义任何逻辑
 
-                    // 获取数组中字典对应的模型
-                    NSString *type =  [idSelf arrayContainModelClass][key];
+  ```objective-c
+  - (id)forwardingTargetForSelector:(SEL)aSelector
+  {
+      if (aSelector == sel_registerName("test")) {
+          return [OtherClass new];
+      }
+      return [super forwardingTargetForSelector:aSelector];
+  }
+  ```
 
-                    // 生成模型
-                    Class classModel = NSClassFromString(type);
-                    NSMutableArray *arrM = [NSMutableArray array];
-                    // 遍历字典数组，生成模型数组
-                    for (NSDictionary *dict in value) // 字典转模型
-                    {
-                        id model =  [classModel modelWithDict:dict];
-                        [arrM addObject:model];
-                    }
+  
 
-                    // 把模型数组赋值给value
-                    value = arrM;
-                }
-            }
+- 以上方法都有对象方法、类方法2个版本（前面可以是加号+，也可以是减号-）
 
-            if (value) // 有值，才需要给模型的属性赋值
-            {    
-                // 利用KVC给模型中的属性赋值
-                [objc setValue:value forKey:key];
-            }
+  - 类方法xcode会出现无代码提示
 
-        }
-            
-        return objc;
-     }
-     @end
+- `methodSignatureForSelector:`方法签名
+
+  ```objective-c
+  - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
+  {
+      if (aSelector == sel_registerName("test")) {
+        //  [[OtherClass new] methodSignatureForSelector:aSelector]
+          return [NSMethodSignature signatureWithObjCTypes:"v@:"];
+      }
+      return [super methodSignatureForSelector:aSelector];
+  }
+  ```
+
+- `- (void)forwardInvocation:(NSInvocation *)anInvocation`
+
+  - 封装了一个方法调用，包括：方法调用者、方法名、方法参数
+
+  ```objective-c
+  - (void)forwardInvocation:(NSInvocation *)anInvocation
+  {
+      anInvocation.target = [OtherClass new];
+  }
+  ```
+
+  
+
+
+
+#### [动态添加方法](#addmethod)
+
+1. OC
+
+   ```objc
+   - (void)other
+   {
+   	NSLog(@"%s", __func__);
+   }
+   
+   + (BOOL)resolveInstanceMethod:(SEL)sel
+   {
+       if (sel == @selector(test)) {
+           Method method = class_getInstanceMethod(self, @selector(other));
+           class_addMethod(self, sel, method_getImplementation(method), method_getTypeEncoding(method))
+             returun YES;
+       }
+       return [super resolveInstanceMethod:sel];
+   }
+   ```
+
+   - `Method`可以理解为等价于`struct method_t *`
+
+2. C
+
+   ```objc
+   void other(id self, SEL _cmd) {
+       NSLog(@"%@ - %s - %s", self, sel_getName(_cmd, __func__);
+   }
+   
+   + (BOOL)resolveInstanceMethod:(SEL)sel
+   {
+       if (sel == @selector(test)) {
+           class_addMethod(self, sel, (IMP)other, "v@:");
+           return YES;
+       }
+       return [super resolveInstanceMethod:sel];
+   }
+   ```
+
+
+- `@dynamic`是告诉编译器不用自动生成getter和setter的实现，等到运行时再添加方法实现
+
+
+
+### super本质
+
+- super调用，底层会转换为objc_msgSendSuper2函数的调用个，接收两个参数
+  - struct objc_super2
+
+    ```objective-c
+    struct objc_super2 {
+      id receiver;
+      Class current_class;
+    }
     ```
 
+  - SEL
+
+- receiver是消息接受者
+
+- curretn_class是receiver的Class对象
+
+### LLVM
+
+- Objective-C在变为机器代码之前，会被LLVM编译器转为中间代码(Intermediate Representation)
+- 可以使用以下命令行指令生成中间代码
+  - `clang -emit-llvm -S main.m`
+- 语法简介
+  - @ - 全局变量
+  - % - 局部变量
+  - alloca - 在当前执行的函数的堆栈中分配内存，但该函数返回到其调用者时，将自动释放内存
+  - i32 - 32位4字节的整数
+  - align - 对其
+  - load - 读出，stroe 写入
+  - icmp - 两个整数值比较，返回布尔值
+  - br - 选择分支，根据条件来转向label，不根据条件跳转的话类似goto
+  - label - 代码标签
+  - call - 调用函数
+- 具体可以参考官方文档：https://llvm.org/docs/LangRef.html
+
+
+
+### API
+
+#### 类
+
+- 动态创建一个类
+
+  ```objective-c
+  /**
+  	superclass: 父类，name: 类名，extraBytes: 额外的内存空间
+  */
+  Class objc_allocateClassPair(Class superclass, const char *name, size_t extraBytes);
+  ```
+
+- 注册一个类
+
+  ```objective-c
+  void objc_registerClassPair(Class cls);
+  ```
+
+- 销毁一个类
+
+  ```objective-c
+  void objc_disposeClassPair(Class cls);
+  ```
+
+- 获取isa指向的Class
+
+  ```objective-c
+  Class object_getClass(id obj);
+  ```
+
+- 设置isa指向的Class
+
+  ```objective-c
+  Class object_setClass(id obj, Class cls);
+  ```
+
+- 判断一个对象是否为Class
+
+  ```objective-c
+  BOOL object_isClass(id obj);
+  ```
+
+- 判断对象是否是元类
+
+  ```objective-c
+  BOOL class_isMetaClass(Class cls);
+  ```
+
+- 获取父类
+
+  ```objc
+  Class class_getSuperclass(Class cls);
+  ```
+
+#### 成员变量
+
+- 获取一个实例变量信息
+
+  ```objective-c
+  Ivar class_getInstanceVariable(Class cls, const char *name);
+  ```
+
+- 拷贝实例变量列表（最后需要调用free释放）
+
+  ```objective-c
+  Ivar *class_copyIvarList(Class cls, unsigned int *outCount);
+  ```
+
+- 设置和获取成员变量的值
+
+  ```objective-c
+  void object_setIvar(id obj, Ivar ivar, id value);
+  id object_getIvar(id obj, Ivar ivar);
+  ```
+
+- 动态添加成员变量（已经注册的类是不能动态添加成员变量的）
+
+  ```objective-c
+  /**
+  	cls: 添加的类
+  	name： 变量名
+  	size：大小
+  	alignment： 对齐， 1
+  	types：类型编码 @encode()
+  */
+  BOOL class_addIvar(Class cls, const char *name, size_t size, uint8_t alignment, const char *types);
+  ```
+
+- 获取成员变量的相关信息
+
+  ```objective-c
+  const char *ivar_getName(Ivar v); // 变量名
+  const char *ivar_getTypeEncoding(Ivar v); // 变量 类型编码
+  ```
+
+#### 方法
+
+- 获得一个实例方法、类方法
+
+  ```objective-c
+  Method class_getInstanceMethod(Class cls, SEL name);
+  Method class_getClassMethod(Class cls, SEL name)
+  ```
+
+- 方法实现相关操作
+
+  ```objective-c
+  IMP class_getMethodImplementation(Class cls, SEL name);
+  IMP method_setImplementation(Method m, IMP imp);
+  void method_exchangeImplementations(Method m1, Method m2);
+  ```
+
+- 拷贝方法列表（最后需要调用free释放）
+
+  ```objective-c
+  Method *class_copyMethodList(Class cls, unsigned int *outCount);
+  ```
+
+- 动态添加方法
+
+  ```objective-c
+  BOOL class_addMethod(Class cls, SEL name, IMP imp, const char *types);
+  ```
+
+- 动态替换方法
+
+  ```objective-c
+  IMP class_replaceMethod(Class cls, SEL name, IMP imp, const char *types);
+  ```
+
+- 获取方法的相关信息（带有copy的需要调用free去释放）
+
+  ```objective-c
+  SEL method_getName(Method m);
+  IMP method_getImplementation(Method m);
+  const char *method_getTypeEncoding(Method m);
+  unsigned int method_getNumberOfArguments(Method m);
+  char *method_copyReturnType(Method m);
+  char *method_copyArgumentType(Method m, unsigned int index);
+  ```
+
+- 选择器相关
+
+  ```objective-c
+  const char *sel_getName(SEL sel);
+  SEL sel_registerName(const char *str);
+  ```
+
+- 用block作为方法实现
+
+  ```objective-c
+  IMP imp_implementationWithBlock(id block);
+  id imp_getBlock(IMP anImp);
+  BOOL imp_removeBlock(IMP anImp);
+  ```
+
+  
+
+### 常见问题
+
+1. OC消息机制
+
+   - OC中的方法掉用其实都是转成了objc_msgSend函数的调用，给方法调用者发送了一条消息(方法名)
+
+   - objc_msgSend底层有3大阶段
+     - 消息发送（当前类、父类中查找）、动态方法解析、消息转发
+
+2. 什么是Runtime
+
+   - OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行
+   - OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数
+   - 平时编写的OC代码，底层都是转换成了Runtime API进行调用
+
+3. 具体应用
+
+   - 利用关联对象（AssociatedObject）给分类添加属性
+   - 遍历类的所有成员变量（修改textfield的占位文字颜色、字典转模型、自动归档解档）
+   - 交换方法实现（交换系统的方法）
+   - 利用消息转发机制解决方法找不到的异常问题
+   - …...
